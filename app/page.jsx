@@ -126,7 +126,7 @@ export default function CentreIALanding() {
                 desc: 'Cada cicle fa la seva. Metodologies fragmentades. Alumnes que canvien de dinàmica cada any.'
               }
             ].map((item, i) => (
-              <div key={i} className="p-8 bg-white border border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all">
+              <div key={i} className="p-8 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all">
                 <div className="text-4xl mb-4">{item.icon}</div>
                 <h3 className="text-2xl font-black mb-3 text-slate-900">{item.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{item.desc}</p>
@@ -330,7 +330,7 @@ export default function CentreIALanding() {
                 school: 'Escola Samuntada de Sabadell'
               }
             ].map((test, i) => (
-              <div key={i} className="p-8 bg-white border-2 border-slate-200 rounded-2xl">
+              <div key={i} className="p-8 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all">
                 <p className="text-lg font-medium text-slate-900 mb-6 italic">
                   "{test.quote}"
                 </p>
