@@ -126,7 +126,7 @@ export default function CentreIALanding() {
                 desc: 'Cada cicle fa la seva. Metodologies fragmentades. Alumnes que canvien de dinàmica cada any.'
               }
             ].map((item, i) => (
-              <div key={i} className="p-8 bg-white border border-slate-200 rounded-2xl hover:border-blue-900 hover:shadow-lg transition-all">
+              <div key={i} className="p-8 bg-white border border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all">
                 <div className="text-4xl mb-4">{item.icon}</div>
                 <h3 className="text-2xl font-black mb-3 text-slate-900">{item.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{item.desc}</p>
@@ -178,7 +178,7 @@ export default function CentreIALanding() {
                 className={`p-8 rounded-2xl border-2 relative overflow-hidden transition-all cursor-pointer ${
                   phase.highlight
                     ? 'border-blue-900 bg-gradient-to-br from-blue-50 to-slate-50 shadow-2xl scale-105'
-                    : 'border-slate-200 bg-gradient-to-br from-slate-100 to-slate-50 hover:border-blue-900'
+                    : 'border-slate-200 bg-gradient-to-br from-slate-100 to-slate-50 hover:border-blue-500'
                 }`}
                 onMouseEnter={() => setActivePhase(i)}
               >
@@ -245,7 +245,7 @@ export default function CentreIALanding() {
                 desc: 'Document de criteris mínim: quin tipus de dades es pot compartir, com anonimitzar. El centre manté control total.'
               }
             ].map((item, i) => (
-              <div key={i} className="p-10 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-900 transition-all">
+              <div key={i} className="p-10 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-blue-100 transition-all">
                 <div className="mb-6">{item.icon}</div>
                 <h3 className="text-2xl font-black mb-4">{item.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{item.desc}</p>
