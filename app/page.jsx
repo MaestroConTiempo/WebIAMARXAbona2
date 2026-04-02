@@ -227,25 +227,36 @@ export default function CentreIALanding() {
             ))}
           </div>
 
-          <div className="bg-slate-50 p-10 rounded-2xl border border-slate-200">
-            <h3 className="text-2xl font-black mb-6">Estructura de sessions (Fase 2)</h3>
-            <div className="space-y-4">
-              {[
-                { num: 'Sessió 1', title: 'Criteris i primer flux',          desc: 'Higiene bàsica + 1a plantilla oficial' },
-                { num: 'Sessió 2', title: 'De veu a document estructurat',   desc: 'Àudio → transcripció → redacció automàtica' },
-                { num: 'Sessió 3', title: 'Automatitzacions pràctiques',     desc: 'Tasques recurrents amb notificacions i fluxos' },
-                { num: 'Sessió 4', title: 'Materials sense morir de feina',  desc: 'Crear recursos adaptats (nivells, NEE) reutilitzables' },
-                { num: 'Sessió 5', title: 'Assistents + Banc + Continuïtat', desc: '2 assistents del centre + manual + pla de manteniment' },
-              ].map((session, i) => (
-                <div key={i} className="flex gap-6 pb-4 border-b border-slate-200 last:border-b-0">
-                  <div className="text-sm font-black text-blue-900 min-w-24">{session.num}</div>
-                  <div>
-                    <p className="font-black text-slate-900">{session.title}</p>
-                    <p className="text-slate-600 text-sm">{session.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+        </div>
+      </section>
+
+      {/* ESTRUCTURA DE SESSIONS */}
+      <section className="py-24 px-6 bg-blue-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-14">
+            <p className="text-blue-300 text-sm font-black uppercase tracking-widest mb-3">Fase 2 · Implantació</p>
+            <h2 className="text-5xl md:text-6xl font-black text-white">Estructura de sessions</h2>
+          </div>
+
+          <div className="grid md:grid-cols-5 gap-5">
+            {[
+              { num: '01', title: 'Criteris i primer flux',          desc: 'Higiene bàsica i primera plantilla oficial del centre.',           icon: '🎯' },
+              { num: '02', title: 'De veu a document estructurat',   desc: 'Àudio → transcripció → redacció automàtica sense esforç.',         icon: '🎙️' },
+              { num: '03', title: 'Automatitzacions pràctiques',     desc: 'Tasques recurrents amb notificacions i fluxos automàtics.',        icon: '⚡' },
+              { num: '04', title: 'Materials sense morir de feina',  desc: 'Recursos adaptats per nivells i NEE, reutilitzables per sempre.',  icon: '📚' },
+              { num: '05', title: 'Assistents + Banc + Continuïtat', desc: '2 assistents del centre, manual operatiu i pla de manteniment.',   icon: '🚀' },
+            ].map((session, i) => (
+              <FadeItem
+                key={i}
+                delay={i * 120}
+                className="bg-white/10 hover:bg-white/20 border border-white/20 hover:border-blue-300 rounded-2xl p-8 flex flex-col gap-4 transition-all"
+              >
+                <div className="text-4xl">{session.icon}</div>
+                <div className="text-blue-300 text-xs font-black uppercase tracking-widest">Sessió {session.num}</div>
+                <h3 className="text-xl font-black text-white leading-snug">{session.title}</h3>
+                <p className="text-blue-200 text-sm leading-relaxed flex-1">{session.desc}</p>
+              </FadeItem>
+            ))}
           </div>
         </div>
       </section>
