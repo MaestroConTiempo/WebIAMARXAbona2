@@ -3,8 +3,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Users, BookOpen, Lock, ArrowUpRight } from 'lucide-react';
 
-// Detects when an element enters the viewport (fires once)
-function useInView(threshold = 0.15) {
+// Each item observes itself individually — animates only when IT enters the viewport
+function FadeItem({ children, delay = 0, dir = 'up', className = '' }) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
+      { threshold: 0.12 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const style = {
+    opacity: inView ? 1 : 0,
+    transform: inView ? 'none'
+      : dir === 'left'  ? 'translateX(-35px)'
+      : dir === 'right' ? 'translateX(35px)'
+      : 'translateY(28px)',
+    transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`,
+  };
+
+  return (
+    <div ref={ref} className={className} style={style}>
+      {children}
+    </div>
+  );
+}
+
+// Container-level observer (used only for counters)
+function useInView(threshold = 0.2) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -18,8 +48,8 @@ function useInView(threshold = 0.15) {
   return [ref, inView];
 }
 
-// Animates a number from 0 to target when inView becomes true
-function useCounter(target, inView, duration = 1200) {
+// Slow animated counter
+function useCounter(target, inView, duration = 2500) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!inView) return;
@@ -35,16 +65,6 @@ function useCounter(target, inView, duration = 1200) {
   return count;
 }
 
-// Returns inline styles for fade-in animation with optional direction and delay
-const fade = (inView, delay = 0, dir = 'up') => ({
-  opacity: inView ? 1 : 0,
-  transform: inView ? 'none' :
-    dir === 'left' ? 'translateX(-30px)' :
-    dir === 'right' ? 'translateX(30px)' :
-    'translateY(25px)',
-  transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
-});
-
 export default function CentreIALanding() {
   const [scrollY, setScrollY] = useState(0);
   const [activePhase, setActivePhase] = useState(0);
@@ -55,16 +75,10 @@ export default function CentreIALanding() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const [metricsRef, metricsInView] = useInView();
-  const [problemaRef, problemaInView] = useInView();
-  const [programaRef, programaInView] = useInView();
-  const [quedaRef, quedaInView] = useInView();
-  const [antesRef, antesInView] = useInView();
-  const [testimonialRef, testimonialInView] = useInView();
-  const [passosRef, passosInView] = useInView();
-
-  const count18 = useCounter(18, metricsInView);
-  const count3 = useCounter(3, metricsInView);
+  // Only the metrics section uses a container observer (needed for counters)
+  const [metricsRef, metricsInView] = useInView(0.3);
+  const count18 = useCounter(18, metricsInView, 2500);
+  const count3  = useCounter(3,  metricsInView, 1800);
 
   return (
     <div className="w-full overflow-hidden bg-white text-slate-900">
@@ -78,7 +92,7 @@ export default function CentreIALanding() {
           <nav className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#problema" className="text-slate-600 hover:text-blue-900 transition">El problema</a>
             <a href="#programa" className="text-slate-600 hover:text-blue-900 transition">Programa</a>
-            <a href="#fases" className="text-slate-600 hover:text-blue-900 transition">Exemples</a>
+            <a href="#fases"    className="text-slate-600 hover:text-blue-900 transition">Exemples</a>
             <a href="#contacte" className="text-slate-600 hover:text-blue-900 transition">Contacte</a>
           </nav>
         </div>
@@ -118,24 +132,19 @@ export default function CentreIALanding() {
             </a>
           </div>
 
-          {/* Impact metrics */}
+          {/* Impact metrics — container-level observer for counters */}
           <div ref={metricsRef} className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="border-l-4 border-blue-900 pl-6" style={fade(metricsInView, 0)}>
-              <div className="text-5xl font-black text-blue-900">{count18}h</div>
-              <div className="text-slate-600 text-sm mt-1">→ 2h per docent en informes</div>
-            </div>
-            <div className="border-l-4 border-blue-900 pl-6" style={fade(metricsInView, 150)}>
-              <div className="text-5xl font-black text-blue-900">=</div>
-              <div className="text-slate-600 text-sm mt-1">Unifiquem la línia d'escola</div>
-            </div>
-            <div className="border-l-4 border-blue-900 pl-6" style={fade(metricsInView, 300)}>
-              <div className="text-5xl font-black text-blue-900">{count3}</div>
-              <div className="text-slate-600 text-sm mt-1">fluxos automatitzats</div>
-            </div>
-            <div className="border-l-4 border-blue-900 pl-6" style={fade(metricsInView, 450)}>
-              <div className="text-5xl font-black text-blue-900">∞</div>
-              <div className="text-slate-600 text-sm mt-1">Estandaritzem maneres de fer al centre</div>
-            </div>
+            {[
+              { value: `${count18}h`, label: '→ 2h per docent en informes',        delay: 0   },
+              { value: '=',           label: "Unifiquem la línia d'escola",          delay: 200 },
+              { value: count3,        label: 'fluxos automatitzats',                 delay: 400 },
+              { value: '∞',           label: 'Estandaritzem maneres de fer al centre', delay: 600 },
+            ].map((m, i) => (
+              <FadeItem key={i} delay={m.delay} className="border-l-4 border-blue-900 pl-6">
+                <div className="text-5xl font-black text-blue-900">{m.value}</div>
+                <div className="text-slate-600 text-sm mt-1">{m.label}</div>
+              </FadeItem>
+            ))}
           </div>
         </div>
       </section>
@@ -146,48 +155,30 @@ export default function CentreIALanding() {
           <h2 className="text-5xl md:text-6xl font-black mb-6">Què passa al vostre centre?</h2>
           <p className="text-xl text-slate-600 mb-16 max-w-3xl">Reconeixeu alguna d'aquestes situacions?</p>
 
-          <div ref={problemaRef} className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {[
-              {
-                icon: '📄',
-                title: 'Informes desiguals',
-                desc: 'Cada docent redacta diferent. Imatge inconsistent davant les famílies. Direcció constantment unificant formats.'
-              },
-              {
-                icon: '⏱️',
-                title: 'Cada docent ho fa a la seva manera',
-                desc: 'Situacions d\'aprenentatge amb enfocaments diferents per cicles. Activitats dissenyades sense un criteri comú.'
-              },
-              {
-                icon: '🔄',
-                title: 'Rotació docent = caos',
-                desc: 'Setembre es torna a començar de zero. Cada docent inventa el seu procés. Cap memòria col·lectiva.'
-              },
-              {
-                icon: '🚫',
-                title: 'IA en teoria, no en pràctica',
-                desc: 'Vau fer un curs. Ara cadascú usa AI o no. Zero protocol, zero seguretat, zero coherència.'
-              },
-              {
-                icon: '📋',
-                title: 'Sense elaboració automàtica de materials',
-                desc: 'Programacions, actes de reunió, materials. Docents redactant a casa perquè a classe no hi ha temps. Cap sistema d\'elaboració automàtica al centre.'
-              },
-              {
-                icon: '🎯',
-                title: 'Sense línia d\'escola',
-                desc: 'Cada cicle fa la seva. Metodologies fragmentades. Alumnes que canvien de dinàmica cada any.'
-              }
+              { icon: '📄', title: 'Informes desiguals',
+                desc: 'Cada docent redacta diferent. Imatge inconsistent davant les famílies. Direcció constantment unificant formats.' },
+              { icon: '⏱️', title: 'Cada docent ho fa a la seva manera',
+                desc: "Situacions d'aprenentatge amb enfocaments diferents per cicles. Activitats dissenyades sense un criteri comú." },
+              { icon: '🔄', title: 'Rotació docent = caos',
+                desc: 'Setembre es torna a començar de zero. Cada docent inventa el seu procés. Cap memòria col·lectiva.' },
+              { icon: '🚫', title: 'IA en teoria, no en pràctica',
+                desc: 'Vau fer un curs. Ara cadascú usa AI o no. Zero protocol, zero seguretat, zero coherència.' },
+              { icon: '📋', title: 'Sense elaboració automàtica de materials',
+                desc: "Programacions, actes de reunió, materials. Docents redactant a casa perquè a classe no hi ha temps. Cap sistema d'elaboració automàtica al centre." },
+              { icon: '🎯', title: "Sense línia d'escola",
+                desc: 'Cada cicle fa la seva. Metodologies fragmentades. Alumnes que canvien de dinàmica cada any.' },
             ].map((item, i) => (
-              <div
+              <FadeItem
                 key={i}
+                delay={0}
                 className="p-8 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all"
-                style={fade(problemaInView, i * 100)}
               >
                 <div className="text-4xl mb-4">{item.icon}</div>
                 <h3 className="text-2xl font-black mb-3 text-slate-900">{item.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{item.desc}</p>
-              </div>
+              </FadeItem>
             ))}
           </div>
 
@@ -207,41 +198,32 @@ export default function CentreIALanding() {
             Programa d'implementació amb 3 fases. Entrem, identifiquem els fluxos que us cremen més, els automatitzem, documentem tot i entreguem sistemes que funcionen.
           </p>
 
-          <div ref={programaRef} className="grid md:grid-cols-3 gap-6 mb-16">
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
             {[
-              {
-                num: '01',
-                title: 'Pilot',
-                desc: 'Provem amb 1 cicle o equip. Implantem fluxos reals. El centre veu el resultat sense compromís global.',
-              },
-              {
-                num: '02',
-                title: 'Implantació',
-                desc: 'Escalem a tot el claustre. Creem 3 fluxos estables, assistents personalitzats i manual operatiu complet.',
-                highlight: true
-              },
-              {
-                num: '03',
-                title: 'Expansió',
-                desc: 'Nous fluxos segons necessitats. Comunicacions a famílies, programacions, seguiment. El sistema creix amb l\'escola.',
-              }
+              { num: '01', title: 'Pilot',
+                desc: 'Provem amb 1 cicle o equip. Implantem fluxos reals. El centre veu el resultat sense compromís global.' },
+              { num: '02', title: 'Implantació', highlight: true,
+                desc: 'Escalem a tot el claustre. Creem 3 fluxos estables, assistents personalitzats i manual operatiu complet.' },
+              { num: '03', title: 'Expansió',
+                desc: "Nous fluxos segons necessitats. Comunicacions a famílies, programacions, seguiment. El sistema creix amb l'escola." },
             ].map((phase, i) => (
-              <div
+              <FadeItem
                 key={i}
+                delay={i * 150}
                 className={`p-8 rounded-2xl border-2 relative overflow-hidden transition-all cursor-pointer ${
                   phase.highlight
                     ? 'border-blue-900 bg-gradient-to-br from-blue-50 to-slate-50 shadow-2xl scale-105'
                     : 'border-slate-200 bg-gradient-to-br from-slate-100 to-slate-50 hover:border-blue-500'
                 }`}
-                style={fade(programaInView, i * 150)}
-                onMouseEnter={() => setActivePhase(i)}
               >
-                <div className={`text-5xl font-black mb-2 ${phase.highlight ? 'text-blue-900' : 'text-slate-400'}`}>
-                  {phase.num}
+                <div onMouseEnter={() => setActivePhase(i)}>
+                  <div className={`text-5xl font-black mb-2 ${phase.highlight ? 'text-blue-900' : 'text-slate-400'}`}>
+                    {phase.num}
+                  </div>
+                  <h3 className="text-3xl font-black mb-4">{phase.title}</h3>
+                  <p className="text-slate-700 leading-relaxed">{phase.desc}</p>
                 </div>
-                <h3 className="text-3xl font-black mb-4">{phase.title}</h3>
-                <p className="text-slate-700 leading-relaxed">{phase.desc}</p>
-              </div>
+              </FadeItem>
             ))}
           </div>
 
@@ -249,11 +231,11 @@ export default function CentreIALanding() {
             <h3 className="text-2xl font-black mb-6">Estructura de sessions (Fase 2)</h3>
             <div className="space-y-4">
               {[
-                { num: 'Sessió 1', title: 'Criteris i primer flux', desc: 'Higiene bàsica + 1a plantilla oficial' },
-                { num: 'Sessió 2', title: 'De veu a document estructurat', desc: 'Àudio → transcripció → redacció automàtica' },
-                { num: 'Sessió 3', title: 'Automatitzacions pràctiques', desc: 'Tasques recurrents amb notificacions i fluxos' },
-                { num: 'Sessió 4', title: 'Materials sense morir de feina', desc: 'Crear recursos adaptats (nivells, NEE) reutilitzables' },
-                { num: 'Sessió 5', title: 'Assistents + Banc + Continuïtat', desc: '2 assistents del centre + manual + pla de manteniment' }
+                { num: 'Sessió 1', title: 'Criteris i primer flux',          desc: 'Higiene bàsica + 1a plantilla oficial' },
+                { num: 'Sessió 2', title: 'De veu a document estructurat',   desc: 'Àudio → transcripció → redacció automàtica' },
+                { num: 'Sessió 3', title: 'Automatitzacions pràctiques',     desc: 'Tasques recurrents amb notificacions i fluxos' },
+                { num: 'Sessió 4', title: 'Materials sense morir de feina',  desc: 'Crear recursos adaptats (nivells, NEE) reutilitzables' },
+                { num: 'Sessió 5', title: 'Assistents + Banc + Continuïtat', desc: '2 assistents del centre + manual + pla de manteniment' },
               ].map((session, i) => (
                 <div key={i} className="flex gap-6 pb-4 border-b border-slate-200 last:border-b-0">
                   <div className="text-sm font-black text-blue-900 min-w-24">{session.num}</div>
@@ -268,7 +250,7 @@ export default function CentreIALanding() {
         </div>
       </section>
 
-      {/* QUÈ QUEDA INSTAL·LAT */}
+      {/* QUÈ QUEDA */}
       <section className="py-24 px-6 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-black mb-6">Què queda al centre quan acabem</h2>
@@ -276,38 +258,30 @@ export default function CentreIALanding() {
             No és teoria. No són certificats. Són sistemes que el claustre usa cada setmana.
           </p>
 
-          <div ref={quedaRef} className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
             {[
-              {
-                icon: <BookOpen size={32} className="text-blue-900" />,
+              { icon: <BookOpen size={32} className="text-blue-900" />,
                 title: '3 fluxos de treball automatitzats',
-                desc: 'Processos que abans consumien hores ara funcionen amb plantilles i assistents. Exemple: informes trimestrals de 45 min/alumne a 2 min/alumne.'
-              },
-              {
-                icon: <Users size={32} className="text-blue-900" />,
+                desc: 'Processos que abans consumien hores ara funcionen amb plantilles i assistents. Exemple: informes trimestrals de 45 min/alumne a 2 min/alumne.' },
+              { icon: <Users size={32} className="text-blue-900" />,
                 title: '2 assistents interns del centre',
-                desc: 'Configurats a mida: alineats amb el vostre projecte educatiu, manera de programar i avaluar. Qualsevol docent els usa des del dia 1.'
-              },
-              {
-                icon: <BookOpen size={32} className="text-blue-900" />,
+                desc: "Configurats a mida: alineats amb el vostre projecte educatiu, manera de programar i avaluar. Qualsevol docent els usa des del dia 1." },
+              { icon: <BookOpen size={32} className="text-blue-900" />,
                 title: 'Manual operatiu del centre',
-                desc: 'Plantilles, protocols i exemples "oficials". Perquè docents nous s\'incorporin i treballin igual. La pràctica queda a l\'escola, no se\'n va amb la persona.'
-              },
-              {
-                icon: <Lock size={32} className="text-blue-900" />,
+                desc: "Plantilles, protocols i exemples \"oficials\". Perquè docents nous s'incorporin i treballin igual. La pràctica queda a l'escola, no se'n va amb la persona." },
+              { icon: <Lock size={32} className="text-blue-900" />,
                 title: 'Criteris de privacitat i RGPD',
-                desc: 'Document de criteris mínim: quin tipus de dades es pot compartir, com anonimitzar. El centre manté control total.'
-              }
+                desc: 'Document de criteris mínim: quin tipus de dades es pot compartir, com anonimitzar. El centre manté control total.' },
             ].map((item, i) => (
-              <div
+              <FadeItem
                 key={i}
+                delay={0}
                 className="p-10 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all"
-                style={fade(quedaInView, i * 120)}
               >
                 <div className="mb-6">{item.icon}</div>
                 <h3 className="text-2xl font-black mb-4">{item.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{item.desc}</p>
-              </div>
+              </FadeItem>
             ))}
           </div>
 
@@ -326,42 +300,28 @@ export default function CentreIALanding() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-black mb-6">Exemples reals: Abans vs Després</h2>
 
-          <div ref={antesRef} className="space-y-6">
+          <div className="space-y-6">
             {[
-              {
-                caso: 'Informes trimestrals (25 alumnes)',
-                antes: '45 min × 25 = 18h per docent. Formats desiguals.',
-                despues: '5 min × 25 = 2h. Format, criteri i to unificats automàticament.'
-              },
-              {
-                caso: 'Creació d\'activitats de resolució de problemes',
-                antes: 'Cada docent crea les seves. Diferent enfocament per cicle. Cap línia d\'escola.',
-                despues: 'Assistent genera activitats alineades amb metodologia pròpia per a tota primària.'
-              },
-              {
-                caso: 'Programacions didàctiques',
-                antes: 'Redacció manual des de zero. Hores per docent. Formats inconsistents.',
-                despues: 'Assistent genera esborrany automàtic amb plantilla oficial. Docent revisa i ajusta.'
-              },
-              {
-                caso: 'Docent nou al centre',
-                antes: 'Setmanes per entendre "com es fan les coses aquí".',
-                despues: 'Accés a assistents i plantilles des del dia 1. Treballa com la resta en una setmana.'
-              }
+              { caso: 'Informes trimestrals (25 alumnes)',
+                antes:   '45 min × 25 = 18h per docent. Formats desiguals.',
+                despues: '5 min × 25 = 2h. Format, criteri i to unificats automàticament.' },
+              { caso: "Creació d'activitats de resolució de problemes",
+                antes:   'Cada docent crea les seves. Diferent enfocament per cicle. Cap línia d\'escola.',
+                despues: 'Assistent genera activitats alineades amb metodologia pròpia per a tota primària.' },
+              { caso: 'Programacions didàctiques',
+                antes:   'Redacció manual des de zero. Hores per docent. Formats inconsistents.',
+                despues: 'Assistent genera esborrany automàtic amb plantilla oficial. Docent revisa i ajusta.' },
+              { caso: 'Docent nou al centre',
+                antes:   '"com es fan les coses aquí". Setmanes per entendre-ho.',
+                despues: 'Accés a assistents i plantilles des del dia 1. Treballa com la resta en una setmana.' },
             ].map((ejemplo, i) => (
               <div key={i} className="grid md:grid-cols-2 gap-6">
-                <div
-                  className="p-8 bg-red-50 border-l-4 border-red-400 rounded-lg"
-                  style={fade(antesInView, i * 80, 'left')}
-                >
+                <FadeItem delay={0} dir="left" className="p-8 bg-red-50 border-l-4 border-red-400 rounded-lg">
                   <p className="text-sm font-black text-red-900 mb-2">ABANS</p>
                   <p className="font-black text-slate-900 mb-3">{ejemplo.caso}</p>
                   <p className="text-slate-700">{ejemplo.antes}</p>
-                </div>
-                <div
-                  className="p-8 bg-green-50 border-l-4 border-green-400 rounded-lg flex flex-col justify-between"
-                  style={fade(antesInView, i * 80 + 220, 'right')}
-                >
+                </FadeItem>
+                <FadeItem delay={300} dir="right" className="p-8 bg-green-50 border-l-4 border-green-400 rounded-lg flex flex-col justify-between">
                   <div>
                     <p className="text-sm font-black text-green-900 mb-2">DESPRÉS</p>
                     <p className="text-slate-700">{ejemplo.despues}</p>
@@ -369,7 +329,7 @@ export default function CentreIALanding() {
                   <div className="mt-4 flex items-center gap-2 text-green-900 font-black">
                     <ArrowUpRight size={20} /> Impacte real
                   </div>
-                </div>
+                </FadeItem>
               </div>
             ))}
           </div>
@@ -381,27 +341,19 @@ export default function CentreIALanding() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-4xl font-black mb-12">Centres que ja ho han implantat</h2>
 
-          <div ref={testimonialRef} className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {[
-              {
-                quote: 'Hem automatitzat la feina repetitiva i hem recuperat hores per a allò que importa. El claustre ara treballa de manera coordinada i els nous docents s\'incorporen en dies, no en setmanes.',
-                author: 'Jordi Gálvez',
-                school: 'Escola Riera Alta, Santa Coloma de Gramenet'
-              },
-              {
-                quote: 'Com a centre ens ha permès unificar el model de redacció dels informes de tota l\'escola. Ara les mestres van molt més relaxades a final dels trimestres.',
-                author: 'Directora',
-                school: 'Escola Samuntada de Sabadell'
-              }
+              { quote: "Hem automatitzat la feina repetitiva i hem recuperat hores per a allò que importa. El claustre ara treballa de manera coordinada i els nous docents s'incorporen en dies, no en setmanes.",
+                author: 'Jordi Gálvez', school: 'Escola Riera Alta, Santa Coloma de Gramenet' },
+              { quote: "Com a centre ens ha permès unificar el model de redacció dels informes de tota l'escola. Ara les mestres van molt més relaxades a final dels trimestres.",
+                author: 'Directora', school: 'Escola Samuntada de Sabadell' },
             ].map((test, i) => (
-              <div
+              <FadeItem
                 key={i}
+                delay={i * 150}
                 className="p-8 bg-white border-2 border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg hover:shadow-blue-100 transition-all"
-                style={fade(testimonialInView, i * 200)}
               >
-                <p className="text-lg font-medium text-slate-900 mb-6 italic">
-                  "{test.quote}"
-                </p>
+                <p className="text-lg font-medium text-slate-900 mb-6 italic">"{test.quote}"</p>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-black text-slate-900">{test.author}</p>
@@ -413,45 +365,29 @@ export default function CentreIALanding() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </FadeItem>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PROCESS */}
+      {/* 4 PASSOS */}
       <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-black mb-6">4 passos per posar el centre en marxa</h2>
 
-          <div ref={passosRef} className="space-y-8">
+          <div className="space-y-8">
             {[
-              {
-                num: '01',
-                title: 'Sessió diagnòstica (gratuïta)',
-                desc: 'Identifiquem on es perd temps, quins processos cremen més i quins tienen més impacte si s\'automatitzen.'
-              },
-              {
-                num: '02',
-                title: 'Pilot amb un cicle o equip',
-                desc: 'Implantem fluxos reals. El centre comprova el resultat avant de comprometre tot el claustre.'
-              },
-              {
-                num: '03',
-                title: 'Implantació completa',
-                desc: 'Escalem al centre: fluxos, assistents personalitzats, manual operatiu i criteris de privacitat.'
-              },
-              {
-                num: '04',
-                title: 'Expansió i suport continu',
-                desc: 'Nous fluxos segons necessitats. El sistema creix amb l\'escola. Docents nous reben accés immediat.'
-              }
+              { num: '01', title: 'Sessió diagnòstica (gratuïta)',
+                desc: "Identifiquem on es perd temps, quins processos cremen més i quins tienen més impacte si s'automatitzen." },
+              { num: '02', title: 'Pilot amb un cicle o equip',
+                desc: 'Implantem fluxos reals. El centre comprova el resultat avant de comprometre tot el claustre.' },
+              { num: '03', title: 'Implantació completa',
+                desc: 'Escalem al centre: fluxos, assistents personalitzats, manual operatiu i criteris de privacitat.' },
+              { num: '04', title: 'Expansió i suport continu',
+                desc: "Nous fluxos segons necessitats. El sistema creix amb l'escola. Docents nous reben accés immediat." },
             ].map((paso, i) => (
-              <div
-                key={i}
-                className="flex gap-8 pb-8 border-b border-slate-200 last:border-b-0"
-                style={fade(passosInView, i * 150)}
-              >
+              <FadeItem key={i} delay={0} className="flex gap-8 pb-8 border-b border-slate-200 last:border-b-0">
                 <div className="min-w-16 h-16 bg-blue-900 text-white rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl font-black">{paso.num}</span>
                 </div>
@@ -459,7 +395,7 @@ export default function CentreIALanding() {
                   <h3 className="text-2xl font-black mb-2">{paso.title}</h3>
                   <p className="text-slate-600 text-lg">{paso.desc}</p>
                 </div>
-              </div>
+              </FadeItem>
             ))}
           </div>
         </div>
