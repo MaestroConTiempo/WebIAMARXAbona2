@@ -103,14 +103,30 @@ export default function CentreIALanding() {
   const count30 = useCounter(30, metricsInView, 2500);
   const count3  = useCounter(3,  metricsInView, 1800);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Sol·licitud diagnòstic - ${formData.centre}`);
-    const body = encodeURIComponent(
-      `Nom: ${formData.nom}\nCentre: ${formData.centre}\nCàrrec: ${formData.carrec}\n\n${formData.missatge}`
-    );
-    window.location.href = `mailto:mestreambtemps@gmail.com?subject=${subject}&body=${body}`;
-    setFormStatus('success');
+    setFormStatus('sending');
+    try {
+      // Clau de Web3Forms — obteniu-la gratuïtament a web3forms.com amb l'email mestreambtemps@gmail.com
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'WEB3FORMS_ACCESS_KEY',
+          subject: `Sol·licitud diagnòstic - ${formData.centre}`,
+          from_name: formData.nom,
+          nom: formData.nom,
+          centre: formData.centre,
+          carrec: formData.carrec,
+          missatge: formData.missatge,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) setFormStatus('success');
+      else setFormStatus('error');
+    } catch {
+      setFormStatus('error');
+    }
   };
 
   return (
@@ -372,10 +388,10 @@ export default function CentreIALanding() {
                 despues: '5 min × 25 = 2h. Format, criteri i to unificats automàticament.' },
               { caso: "Creació d'activitats de resolució de problemes",
                 antes:   "Cada docent crea les seves. Diferent enfocament per cicle. Cap línia d'escola.",
-                despues: 'Assistent genera activitats alineades amb metodologia pròpia per a tota la primària.' },
+                despues: "L'assistent genera activitats alineades amb la metodologia pròpia del centre per a tota la primària." },
               { caso: 'Programacions didàctiques',
                 antes:   'Redacció manual des de zero. Hores per docent. Formats inconsistents.',
-                despues: 'Assistent genera esborrany automàtic amb plantilla oficial. Docent revisa i ajusta.' },
+                despues: "L'assistent genera un esborrany automàtic amb la plantilla oficial del centre. El docent revisa i ajusta." },
               { caso: 'Docent nou al centre',
                 antes:   '"com es fan les coses aquí". Setmanes per entendre-ho.',
                 despues: 'Accés a assistents i plantilles des del dia 1. Treballa com la resta en una setmana.' },
