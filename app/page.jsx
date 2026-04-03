@@ -421,7 +421,7 @@ export default function CentreIALanding() {
       <section className="py-24 px-6 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-4xl font-black mb-4">Centres que ja ho han implantat</h2>
-          <p className="text-xl text-slate-500 mb-14">En nombres concrets, no en impressions generals.</p>
+          <div className="mb-14" />
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
