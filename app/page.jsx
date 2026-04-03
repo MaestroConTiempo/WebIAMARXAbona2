@@ -135,13 +135,13 @@ export default function CentreIALanding() {
           {/* Impact metrics — container-level observer for counters */}
           <div ref={metricsRef} className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: `${count30}h → 2h`, label: 'Reduïm el temps en burocràcia per mestre/trimestre', delay: 0 },
-              { value: '≡',        label: "Unifiquem la línia d'escola",                delay: 200 },
-              { value: count3,     label: 'fluxos automatitzats',                       delay: 400 },
-              { value: '∞',        label: 'Estandaritzem maneres de fer al centre',     delay: 600 },
+              { value: `${count30}h → 2h`, label: 'Reduïm el temps en burocràcia per mestre/trimestre', delay: 0,   size: 'text-3xl' },
+              { value: '≡',        label: "Unifiquem la línia d'escola",                delay: 200, size: 'text-5xl' },
+              { value: count3,     label: 'fluxos automatitzats',                       delay: 400, size: 'text-5xl' },
+              { value: '∞',        label: 'Estandaritzem maneres de fer al centre',     delay: 600, size: 'text-5xl' },
             ].map((m, i) => (
               <FadeItem key={i} delay={m.delay} className="border-l-4 border-blue-900 pl-6">
-                <div className="text-5xl font-black text-blue-900">{m.value}</div>
+                <div className={`${m.size} font-black text-blue-900 whitespace-nowrap`}>{m.value}</div>
                 <div className="text-slate-600 text-sm mt-1">{m.label}</div>
               </FadeItem>
             ))}
