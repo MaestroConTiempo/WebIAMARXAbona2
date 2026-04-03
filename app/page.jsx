@@ -161,7 +161,7 @@ export default function CentreIALanding() {
           </p>
 
           <p className="text-lg text-slate-500 mb-10 max-w-3xl leading-relaxed">
-            Implantem fluxos de treball amb IA que el claustre usa dia a dia. Informes que passaven de 30 hores a 2. Una línia d'escola unificada, que tothom segueix. Sistemàtica, documentada, que queda al centre.
+            Implantem fluxos de treball amb IA que el claustre usa dia a dia. Una línia d'escola unificada, que tothom segueix. Sistemàtica, documentada, que queda al centre.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
