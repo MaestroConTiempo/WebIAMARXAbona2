@@ -486,7 +486,7 @@ export default function CentreIALanding() {
 
       {/* FOOTER */}
       <footer className="py-8 px-6 bg-slate-900 text-slate-400 text-center">
-        <p className="text-sm">© 2025 Mestre amb Temps. Tota la informació es gestiona sota criteris RGPD.</p>
+        <p className="text-sm">© 2026 Mestre amb Temps. Tota la informació es gestiona sota criteris RGPD.</p>
       </footer>
     </div>
   );
