@@ -137,7 +137,7 @@ export default function CentreIALanding() {
             {[
               { value: `${count30}h → 2h`, label: 'Reduïm el temps en burocràcia per mestre/trimestre', delay: 0,   size: 'text-3xl' },
               { value: '≡',        label: "Unifiquem la línia d'escola",                delay: 200, size: 'text-5xl' },
-              { value: count3,     label: 'fluxos automatitzats',                       delay: 400, size: 'text-5xl' },
+              { value: count3,     label: 'fluxos automatitzats',                       delay: 400, size: 'text-3xl' },
               { value: '∞',        label: 'Estandaritzem maneres de fer al centre',     delay: 600, size: 'text-5xl' },
             ].map((m, i) => (
               <FadeItem key={i} delay={m.delay} className="border-l-4 border-blue-900 pl-6">
