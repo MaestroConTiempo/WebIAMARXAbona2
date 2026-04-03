@@ -150,10 +150,12 @@ export default function CentreIALanding() {
             Per a directius i equips pedagògics
           </div>
 
-          <h1 className="text-7xl md:text-8xl font-black leading-tight mb-8 tracking-tight">
-            Sistemes,
+          <h1 className="text-5xl md:text-6xl font-black leading-tight mb-8 tracking-tight">
+            Informes. Programacions. Adaptacions. Activitats.
             <br />
-            <span className="text-blue-900">no formació.</span>
+            <span className="text-blue-900">Tot el que crema hores al vostre claustre, automatitzat.</span>
+            <br />
+            <span className="text-slate-500 text-4xl md:text-5xl">Sense dependre de cap expert.</span>
           </h1>
 
           <p className="text-2xl text-slate-700 mb-4 max-w-3xl leading-relaxed font-bold">
