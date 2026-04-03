@@ -151,8 +151,6 @@ export default function CentreIALanding() {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-black leading-tight mb-8 tracking-tight">
-            Informes. Programacions. Adaptacions. Activitats.
-            <br />
             <span className="text-blue-900">Tot el que crema hores al vostre claustre, automatitzat.</span>
             <br />
             <span className="text-slate-500 text-4xl md:text-5xl">Sense dependre de cap expert.</span>
