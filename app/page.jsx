@@ -112,7 +112,7 @@ export default function CentreIALanding() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          access_key: 'WEB3FORMS_ACCESS_KEY',
+          access_key: '91374749-c0ee-477c-9614-7b01b490676c',
           subject: `Sol·licitud diagnòstic - ${formData.centre}`,
           from_name: formData.nom,
           nom: formData.nom,
