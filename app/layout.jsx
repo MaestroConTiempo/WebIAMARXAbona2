@@ -4,6 +4,7 @@ export const metadata = {
   title: 'Centre IA en Marxa - Implementació de sistemes IA per a centres educatius',
   description: 'Programa d\'implementació per a escoles. Diagnòstic gratuït. Fluxos automatitzats, assistents personalitzats, manual operatiu i criteris RGPD.',
   keywords: 'educació, IA, automatització, centre educatiu, Cataluña',
+  icons: { icon: '/icon.svg' },
 };
 
 export default function RootLayout({ children }) {
