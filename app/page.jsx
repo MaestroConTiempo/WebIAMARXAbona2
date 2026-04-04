@@ -461,6 +461,42 @@ export default function CentreIALanding() {
         </div>
       </section>
 
+      {/* QUI HI HA DARRERE */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <FadeItem>
+            <div className="text-center mb-12">
+              <p className="text-blue-600 text-sm font-bold tracking-widest uppercase mb-4">Qui hi ha darrere</p>
+              <div className="flex justify-center mb-6">
+                <img
+                  src="/ruben.png"
+                  alt="Rubén Fabri"
+                  className="w-36 h-36 rounded-full object-cover object-top shadow-lg border-4 border-blue-100"
+                />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black">Rubén Fabri</h2>
+            </div>
+          </FadeItem>
+
+          <div className="space-y-6">
+            <FadeItem delay={0}>
+              <div className="bg-slate-50 border-l-4 border-blue-500 rounded-r-2xl p-8">
+                <p className="text-slate-700 text-lg leading-relaxed italic">
+                  +15 anys de mestre a primària. Conec la realitat de l'aula, el claustre i les reunions de cicle. Parlo des de dins del sector, no des de fora.
+                </p>
+              </div>
+            </FadeItem>
+            <FadeItem delay={100}>
+              <div className="bg-slate-50 border-l-4 border-blue-300 rounded-r-2xl p-8">
+                <p className="text-slate-700 text-lg leading-relaxed italic">
+                  Sóc el secretari de l'escola. Sé què és fer actes, certificats, memòries, reunions... No parlo de teoria — visc cada dia la paperassa dels càrrecs. Especialista en automatització i IA aplicada. No ensenyo eines — ensenyo a muntar sistemes.
+                </p>
+              </div>
+            </FadeItem>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-24 px-6">
         <div className="max-w-3xl mx-auto">
