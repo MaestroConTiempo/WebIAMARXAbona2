@@ -1,0 +1,29 @@
+{
+  "disableAllHooks": true,
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git remote:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(cmd.exe /c \"where npm\")",
+      "Bash(cmd.exe /c \"where node\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(command -v npm)",
+      "Bash(where npm:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/rfabri/AppData/Roaming/**)",
+      "Read(//c/Users/rfabri/**)",
+      "Bash(find /c/Users/rfabri/AppData/Roaming -name *.json -path *claude*)",
+      "Bash(find /c/Users/rfabri/AppData/Local -name *.json -path *claude*)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(find /c/Users/rfabri -name settings.json -path *claude*)"
+    ]
+  }
+}
